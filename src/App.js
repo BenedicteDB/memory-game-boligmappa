@@ -44,12 +44,12 @@ const App = () => {
     resetSelectedCards();
   }, [firstSelectedCard, resetSelectedCards]);
 
-  const handleNewGame = () => {
+  const handleNewGame = useCallback(() => {
     setTurns(0);
     setMatched(0);
     setMemoryCards(shuffleCards(lettersArray));
     resetSelectedCards();
-  };
+  }, [resetSelectedCards]);
 
   const isFlipped = (card) => {
     return (
@@ -74,6 +74,7 @@ const App = () => {
     resetSelectedCards,
   ]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     handleNewGame();
   }, []);
