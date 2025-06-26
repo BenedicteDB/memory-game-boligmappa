@@ -1,6 +1,6 @@
 import Card from "./components/Card";
 import lettersArray from "./data/lettersArray";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useBeforeUnload } from "./hooks/useBeforeUnload";
 import { shuffleCards } from "./utils/shuffleCards";
 
@@ -30,28 +30,19 @@ const App = () => {
     );
   };
 
-  const handleMatchedCards = () => {
-    // setMemoryCards((prevCards) => {
-    //   return prevCards.map((card) => {
-    //     if (card.letter === firstSelectedCard.letter) {
-    //       return { ...card, matched: true };
-    //     } else {
-    //       return card;
-    //     }
-    //   });
-    // });
+  const resetSelectedCards = useCallback(() => {
+    setFirstSelectedCard(null);
+    setSecondSelectedCard(null);
+    setDisableClick(false);
+  }, []);
+
+  const handleMatchedCards = useCallback(() => {
     setMemoryCards((prevCards) =>
       markMatchedCards(prevCards, firstSelectedCard.letter)
     );
     setMatched((matched) => matched + 1);
     resetSelectedCards();
-  };
-
-  const resetSelectedCards = () => {
-    setFirstSelectedCard(null);
-    setSecondSelectedCard(null);
-    setDisableClick(false);
-  };
+  }, [firstSelectedCard, resetSelectedCards]);
 
   const handleNewGame = () => {
     setTurns(0);
@@ -76,7 +67,12 @@ const App = () => {
         setTimeout(() => resetSelectedCards(), 500);
       }
     }
-  }, [firstSelectedCard, secondSelectedCard]);
+  }, [
+    firstSelectedCard,
+    secondSelectedCard,
+    handleMatchedCards,
+    resetSelectedCards,
+  ]);
 
   useEffect(() => {
     handleNewGame();
