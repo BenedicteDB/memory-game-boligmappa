@@ -24,11 +24,11 @@ const App = () => {
       : setFirstSelectedCard(card);
   };
 
-  const markMatchedCards = (cards, letterToMatch) => {
+  const markMatchedCards = useCallback((cards, letterToMatch) => {
     return cards.map((card) =>
       card.letter === letterToMatch ? { ...card, matched: true } : card
     );
-  };
+  }, []);
 
   const resetSelectedCards = useCallback(() => {
     setFirstSelectedCard(null);
@@ -42,7 +42,7 @@ const App = () => {
     );
     setMatched((matched) => matched + 1);
     resetSelectedCards();
-  }, [firstSelectedCard, resetSelectedCards]);
+  }, [firstSelectedCard, resetSelectedCards, markMatchedCards]);
 
   const handleNewGame = useCallback(() => {
     setTurns(0);
@@ -74,10 +74,9 @@ const App = () => {
     resetSelectedCards,
   ]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     handleNewGame();
-  }, []);
+  }, [handleNewGame]);
 
   useBeforeUnload();
 
